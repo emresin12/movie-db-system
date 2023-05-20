@@ -11,7 +11,7 @@ class PostgresBase:
         self.connection = None
 
     def get_connection(self):
-        if self.connection:
+        if self.connection and self.connection.closed == 0:
             return self.connection
         else:
             connection = psycopg2.connect(
@@ -40,3 +40,11 @@ class PostgresBase:
             dict_result.append(dict(row))
         cursor.close()
         return dict_result
+
+    def get_as_list(self, query):
+        connection = self.get_connection()
+        cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cursor.execute(query)
+        ans = cursor.fetchall()
+        cursor.close()
+        return ans
