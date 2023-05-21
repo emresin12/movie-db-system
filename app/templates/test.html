@@ -117,17 +117,14 @@
     <script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
-            var actions = $("table td:last-child").html();
+            var actions = '<a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a> <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a> <a class="delete" title="Delete" data-toggle="tooltip" data-row-id="0"><i class="material-icons">&#xE872;</i></a>'
             // Append table with add row form on add new button click
             $(".add-new").click(function () {
                 $(this).attr("disabled", "disabled");
                 var index = $("table tbody tr:last-child").index();
-                var row = '<tr>' +
-                    '<td><input type="text" class="form-control" name="name" id="name"></td>' +
-                    '<td><input type="text" class="form-control" name="department" id="department"></td>' +
-                    '<td><input type="text" class="form-control" name="phone" id="phone"></td>' +
-                    '<td>' + actions + '</td>' +
-                    '</tr>';
+                var fields_arr = {{ fields | tojson }};
+                var row = '<tr>' + fields_arr.map(field => `<td><input type="text" class="form-control" name=${field} id=${field}></td>`).join(' ') +
+                    '<td>' + actions + '</td>' + '</tr>';
                 $("table").append(row);
                 $("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
                 $('[data-toggle="tooltip"]').tooltip();
@@ -146,6 +143,20 @@
                 });
                 $(this).parents("tr").find(".error").first().focus();
                 if (!empty) {
+                    $.ajax({
+                        url: "{{ url_for('crud_table_blueprint.submit') }}",
+                        type: "POST",
+                        data: $(this).parents("tr").find('input[type="text"]').serialize(),
+                        success: function (response) {
+                            // Show success notification
+                            alert(response);
+                            window.location.reload();
+                        },
+                        error: function (error) {
+                            // Show error notification
+                            alert(error);
+                        }
+                    });
                     input.each(function () {
                         $(this).parent("td").html($(this).val());
                     });
@@ -155,14 +166,33 @@
             });
             // Edit row on edit button click
             $(document).on("click", ".edit", function () {
-                $(this).parents("tr").find("td:not(:last-child)").each(function () {
-                    $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
+                //$(this).parents("tr").find("td:not(:last-child)").each(function () {
+                //    $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
+                //});
+                var fields_arr = {{ fields | tojson }};
+                $(this).parents("tr").find("td:not(:last-child)").each(function (index) {
+                    $(this).html(`<form id="data-form" method="POST"> <input type="text" name=${fields_arr[index]} class="form-control" value="` + $(this).text() + '"> </form>');
                 });
                 $(this).parents("tr").find(".add, .edit").toggle();
                 $(".add-new").attr("disabled", "disabled");
             });
             // Delete row on delete button click
             $(document).on("click", ".delete", function () {
+                var rowId = $(this).data("row-id");
+                $.ajax({
+                    url: "{{ url_for('crud_table_blueprint.delete') }}",
+                    type: "POST",
+                    data: { primary_key_value: rowId },
+                    success: function (response) {
+                        // Show success notification
+                        alert(response);
+                        window.location.reload();
+                    },
+                    error: function (error) {
+                        // Show error notification
+                        alert(error);
+                    }
+                });
                 $(this).parents("tr").remove();
                 $(".add-new").removeAttr("disabled");
             });
@@ -184,23 +214,25 @@
             <thead>
             <tr>
                 {% for field in fields %}
-                <th>{{ field.title().replace("_", " ") }}</th>
+                    <th>{{ field.title().replace("_", " ") }}</th>
                 {% endfor %}
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             {% for row in rows %}
-            <tr>
-                {% for cur_field in row %}
-                <td>{{ cur_field }}</td>
-                {% endfor %}
-                <td>
-                    <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-                    <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                    <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                </td>
-            </tr>
+                <tr>
+                    {% for cur_field in row %}
+                        <td>{{ cur_field }}</td>
+                    {% endfor %}
+                    <td>
+                        <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                        <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                        {% set primary_key_index = fields.index(primary_key) %}
+                        <a class="delete" title="Delete" data-toggle="tooltip" data-row-id="{{ row[primary_key_index] }}"><i
+                                class="material-icons">&#xE872;</i></a>
+                    </td>
+                </tr>
             {% endfor %}
             </tbody>
         </table>
