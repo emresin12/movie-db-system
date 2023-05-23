@@ -4,7 +4,7 @@
     <title>Form</title>
 </head>
 <body>
-    <form method="POST" action="{{ url_for('director_blueprint.submit') }}">
+    <form method="POST" action="{{ url_for('audience_blueprint.submit') }}">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
 
@@ -16,12 +16,6 @@
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br>
-
-        <label for="nation_id">Nation ID:</label>
-        <input type="text" id="nation_id" name="nation_id" required><br>
-
-        <label for="rating_platform_id">Rating Platform ID:</label>
-        <input type="text" id="rating_platform_id" name="rating_platform_id" required><br>
 
         <input type="submit" value="Submit">
     </form>
