@@ -35,12 +35,13 @@ crud_table_blueprint = Blueprint(
 )
 
 
-@crud_table_blueprint.route('/testing')
-def test():
+@crud_table_blueprint.route('/examplecrud')
+def example1():
     table_name = 'theatretest'
     primary_key = "theatre_id"
     data = get_table_info(table_name)
-    return render_template('test.html', fields=data[0], rows=data[1], table_name=table_name, primary_key=primary_key)
+    return render_template('CrudTable.html', fields=data[0], rows=data[1], table_name=table_name,
+                           primary_key=primary_key)
 
 
 @crud_table_blueprint.route('/submit', methods=['POST'])
@@ -48,7 +49,7 @@ def submit():
     # Handle the form submission here
     table_name = 'theatretest'
     primary_key = "theatre_id"
-    if request.method == 'POST':
+    if request.method=='POST':
         # Access the form data
         data = request.form
         for key, value in data.items():
@@ -79,3 +80,21 @@ def delete():
         query = f"DELETE FROM {table_name} WHERE {primary_key} = '{primary_key_value}'"
         postgres_aws.write(query)
         return "Object is deleted successfully!"
+
+
+@crud_table_blueprint.route('/exampleview')
+def example2():
+    query = """select sub.username                          as username,
+       sub.password                          as password,
+       (case
+            when (select count(*) > 0 from audience where sub.username = audience.username) then 'Audience'
+            when (select count(*) > 0 from directors where sub.username = directors.username) then 'Director'
+            when (select count(*) > 0 from databasemanagers where sub.username = databasemanagers.username)
+                then 'Database Manager' end) as user_role
+from (select u.username, u.password
+      from "User" u
+      union all
+      select dm.username, dm.password
+      from databasemanagers dm) sub"""
+    data = postgres_aws.get_rows_and_fields_from_sql(query)
+    return render_template('TableView.html', fields=data[0], rows=data[1], table_title='All Users')

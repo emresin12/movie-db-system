@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from flask import Flask
 
 from app.crud_table import crud_table_blueprint
+from app.directors import director_blueprint
 
 load_dotenv()
 
@@ -14,4 +15,6 @@ def hello_world():
 
 
 app.register_blueprint(crud_table_blueprint)
+app.register_blueprint(director_blueprint)
+
 app.run()
