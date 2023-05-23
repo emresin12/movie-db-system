@@ -4,19 +4,36 @@
 # 2. Database managers shall be able to add new Users (Audiences or Directors)
 # to the system.
 from clients.postgres.postgresql_db import postgres_aws
-from flask import render_template, Blueprint, request, redirect, flash, url_for
-from app.helper_functions import create_director, create_user, define_director_platform
-from pydantic import BaseModel, validator
+from flask import render_template, Blueprint
+from .views import current_user, app
+from functools import wraps
 
 director_blueprint = Blueprint("director_blueprint", __name__)
-
 
 @director_blueprint.route("/directors")
 def directors_home_page():
     return render_template("DirectorsHome.html")
 
+def login_required(role="ANY"):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            with app.app_context():  # Create a temporary application context
+                if not current_user.is_authenticated:
+                    return app.login_manager.unauthorized()
+                urole = current_user._get_current_object().get_urole()
+                print(urole)
+                if (urole != role) and (role != "ANY"):
+                    return render_template("index.html", error="not authorized")
+            return fn(*args, **kwargs)
 
-@director_blueprint.route("/directors/list")
+        return decorated_view
+
+    return wrapper
+
+
+@director_blueprint.route("/directors")
+@login_required("Database_Manager")
 def view_directors():
     query = """
     select d.username, u.name, u.surname, n.nation, dww.platform_id, rp.platform_name from directors d 
@@ -29,8 +46,8 @@ def view_directors():
     return render_template(
         "TableView.html", fields=data[0], rows=data[1], table_title="Directors"
     )
-
-
+  
+  
 @director_blueprint.route("/directors/create")
 def create_director_page():
     nations = postgres_aws.get("SELECT * FROM nation")

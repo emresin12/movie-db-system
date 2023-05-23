@@ -1,5 +1,26 @@
 from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint, request
+from .views import current_user, app
+from functools import wraps
+import os
+
+
+def login_required(role="ANY"):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            with app.app_context():  # Create a temporary application context
+                if not current_user.is_authenticated:
+                    return app.login_manager.unauthorized()
+                urole = current_user._get_current_object().get_urole()
+                print(urole)
+                if (urole != role) and (role != "ANY"):
+                    return render_template("index.html", error="not authorized")
+            return fn(*args, **kwargs)
+
+        return decorated_view
+
+    return wrapper
 
 
 def get_table_fields(table_name):
@@ -38,6 +59,7 @@ crud_table_blueprint = Blueprint("crud_table_blueprint", __name__)
 
 
 @crud_table_blueprint.route("/examplecrud")
+@login_required(role="Audience")
 def example1():
     table_name = "theatretest"
     primary_key = "theatre_id"

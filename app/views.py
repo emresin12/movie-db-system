@@ -12,11 +12,12 @@ from flask_login import (
     LoginManager,
     current_user,
     logout_user,
-    login_required,
 )
 
 # load_dotenv()
 app = Flask(__name__)
+
+
 from app.crud_table import crud_table_blueprint
 from app.directors import director_blueprint
 
@@ -76,13 +77,13 @@ def login_required(role="ANY"):
     def wrapper(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
-
-            if not current_user.is_authenticated:
-                return app.login_manager.unauthorized()
-            urole = current_user._get_current_object().get_urole()
-            print(urole)
-            if (urole != role) and (role != "ANY"):
-                return render_template("index.html", error="not authorized")
+            with app.app_context():  # Create a temporary application context
+                if not current_user.is_authenticated:
+                    return app.login_manager.unauthorized()
+                urole = current_user._get_current_object().get_urole()
+                print(urole)
+                if (urole != role) and (role != "ANY"):
+                    return render_template("index.html", error="not authorized")
             return fn(*args, **kwargs)
 
         return decorated_view
@@ -124,12 +125,11 @@ where sub.username = '{username}'
         user = postgres_aws.get(query)
         print(user)
         if user:
-
             userObj = User(user)
             login_user(userObj)
             print(current_user.is_authenticated)
             print(current_user.get_id())
-
+            print(request.values)
             next = request.args.get("next")
             print(next)
 
@@ -138,10 +138,7 @@ where sub.username = '{username}'
             # Invalid credentials
             error = "Invalid username or password"
             return render_template("login.html", error=error)
-
     return render_template("login.html")
-
-
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
     logout_user()
