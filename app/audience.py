@@ -4,14 +4,13 @@ from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint, request, redirect, flash, url_for
 from app.helper_functions import create_audience, create_user, define_director_platform
 from pydantic import BaseModel
+
 audience_blueprint = Blueprint("audience_blueprint", __name__)
 
 
 @audience_blueprint.route("/audience")
 def directors_home_page():
-    return render_template(
-        "AudienceHome.html"
-    )
+    return render_template("AudienceHome.html")
 
 
 @audience_blueprint.route("/audience/list")
@@ -28,9 +27,7 @@ def view_audience():
 
 @audience_blueprint.route("/audience/create")
 def create_audience_page():
-    return render_template(
-        "AudienceCreate.html"
-    )
+    return render_template("AudienceCreate.html")
 
 
 class AudienceCreateRequestObject(BaseModel):
@@ -40,7 +37,12 @@ class AudienceCreateRequestObject(BaseModel):
     surname: str
 
     def insert_to_database(self):
-        create_user(username=self.username, password=self.password, name=self.name, surname=self.surname)
+        create_user(
+            username=self.username,
+            password=self.password,
+            name=self.name,
+            surname=self.surname,
+        )
         create_audience(username=self.username)
         return True
 
@@ -54,7 +56,7 @@ def submit():
             obj = AudienceCreateRequestObject(**data)
             obj.insert_to_database()
         except Exception as e:
-            flash(str(e.args), 'error')
-            return redirect(url_for('audience_blueprint.create_audience_page'))
-    flash('Audience is created successfully!', 'success')
-    return redirect(url_for('audience_blueprint.create_audience_page'))
+            flash(str(e.args), "error")
+            return redirect(url_for("audience_blueprint.create_audience_page"))
+    flash("Audience is created successfully!", "success")
+    return redirect(url_for("audience_blueprint.create_audience_page"))
