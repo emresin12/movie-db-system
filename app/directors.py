@@ -32,8 +32,9 @@ def view_directors():
 
 @director_blueprint.route("/directors/create")
 def create_director_page():
+    nations = postgres_aws.get("SELECT * FROM nation")
     return render_template(
-        "create_director.html"
+        "create_director.html", nations=nations
     )
 
 

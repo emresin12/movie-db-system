@@ -17,8 +17,14 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br>
 
-        <label for="nation_id">Nation ID:</label>
-        <input type="text" id="nation_id" name="nation_id" required><br>
+        <label for="nation_id">Nation:</label>
+        <select id="nation_id" name="nation_id" required>
+          <option value="" selected disabled>Select a nation</option>
+        {% for nation in nations %}
+            <option value={{ nation['nation_id'] }}>{{ nation['nation'] }}</option>
+        {% endfor %}
+          <!-- Add more options as needed -->
+        </select><br>
 
         <label for="rating_platform_id">Rating Platform ID:</label>
         <input type="text" id="rating_platform_id" name="rating_platform_id" required><br>
