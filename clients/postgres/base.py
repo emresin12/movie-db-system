@@ -48,3 +48,23 @@ class PostgresBase:
         ans = cursor.fetchall()
         cursor.close()
         return ans
+
+    def get_rows_and_fields_from_sql(self, query):
+        connection = self.get_connection()
+        cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cursor.execute(query)
+        ans = cursor.fetchall()
+        dict_result = []
+        for row in ans:
+            dict_result.append(dict(row))
+        cursor.close()
+        if not dict_result:
+            return []
+        else:
+            fields = list(dict_result[0].keys())
+            array_of_values = []
+            for dictionary in dict_result:
+                values = list(dictionary.values())
+                array_of_values.append(values)
+            rows = array_of_values
+            return fields, rows

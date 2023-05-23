@@ -18,6 +18,7 @@ from flask_login import (
 #load_dotenv()
 app = Flask(__name__)
 from app.crud_table import crud_table_blueprint
+from app.directors import director_blueprint
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -147,4 +148,6 @@ def logout():
 
 
 app.register_blueprint(crud_table_blueprint)
+app.register_blueprint(director_blueprint)
+
 app.run()
