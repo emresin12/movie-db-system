@@ -6,7 +6,9 @@
 from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint
 
-director_blueprint = Blueprint("director_blueprint", __name__)
+director_blueprint = Blueprint(
+    "director_blueprint", __name__
+)
 
 @director_blueprint.route("/directors")
 def directors_home_page():
