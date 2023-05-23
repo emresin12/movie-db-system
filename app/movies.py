@@ -6,14 +6,14 @@
 from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint
 
-movie_blueprint = Blueprint(
-    "director_blueprint", __name__
-)
+movie_blueprint = Blueprint("director_blueprint", __name__)
 
 
-@movie_blueprint.route('/movies')
+@movie_blueprint.route("/movies")
 def view_directors():
     query = """
     """
     data = postgres_aws.get_rows_and_fields_from_sql(query)
-    return render_template('TableView.html', fields=data[0], rows=data[1], table_title='Directors')
+    return render_template(
+        "TableView.html", fields=data[0], rows=data[1], table_title="Directors"
+    )
