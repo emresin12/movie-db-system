@@ -11,7 +11,25 @@ movie_blueprint = Blueprint(
 )
 
 
-@movie_blueprint.route('/movies')
+def login_required(role="ANY"):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            with app.app_context():  # Create a temporary application context
+                if not current_user.is_authenticated:
+                    return app.login_manager.unauthorized()
+                urole = current_user._get_current_object().get_urole()
+                print(urole)
+                if (urole != role) and (role != "ANY"):
+                    return render_template("index.html", error="not authorized")
+            return fn(*args, **kwargs)
+
+        return decorated_view
+
+    return wrapper
+  
+  
+@movie_blueprint.route("/movies")
 def view_directors():
     query = """
     """

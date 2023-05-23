@@ -1,9 +1,10 @@
 from dotenv import load_dotenv
+
+from app.audience import audience_blueprint
 from clients.postgres.postgresql_db import postgres_aws
 from flask import Flask, request, render_template, redirect, session,url_for
 import os
 from functools import wraps
-
 
 from flask_login import (
     UserMixin,
@@ -23,7 +24,6 @@ from app.directors import director_blueprint
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-
 
 app.secret_key = os.environ.get("SECRET_KEY")
 
@@ -90,8 +90,8 @@ def login_required(role="ANY"):
     return wrapper
 
 
-@app.route('/')
-@login_required("Director")
+@app.route("/")
+@login_required("ANY")
 def index():
     print("indexten")
     print(current_user.is_authenticated)
@@ -135,12 +135,10 @@ where sub.username = '{username}'
             return redirect(next or url_for('index'))
         else:
             # Invalid credentials
-            error = 'Invalid username or password'
-            return render_template('login.html', error=error)
-
-    return render_template('login.html')
-
-@app.route("/logout",methods=["GET","POST"])
+            error = "Invalid username or password"
+            return render_template("login.html", error=error)
+    return render_template("login.html")
+@app.route("/logout", methods=["GET", "POST"])
 def logout():
     logout_user()
     return "goodbye"
@@ -149,5 +147,6 @@ def logout():
 
 app.register_blueprint(crud_table_blueprint)
 app.register_blueprint(director_blueprint)
+app.register_blueprint(audience_blueprint)
 
 app.run()
