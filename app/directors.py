@@ -1,17 +1,20 @@
 # Requirement: 5. Database managers shall be able to view all directors.
 # The list must include the following attributes: username,
 # name, surname, nation, platform id.
+# 2. Database managers shall be able to add new Users (Audiences or Directors)
+# to the system.
 from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint, request, redirect, flash, url_for
 from app.helper_functions import create_director, create_user, define_director_platform
 from pydantic import BaseModel, validator
+
 director_blueprint = Blueprint("director_blueprint", __name__)
 
 
 @director_blueprint.route("/directors")
 def directors_home_page():
     return render_template(
-        "directors.html"
+        "DirectorsHome.html"
     )
 
 
@@ -34,7 +37,7 @@ def view_directors():
 def create_director_page():
     nations = postgres_aws.get("SELECT * FROM nation")
     return render_template(
-        "create_director.html", nations=nations
+        "DirectorsCreate.html", nations=nations
     )
 
 
@@ -77,7 +80,7 @@ class DirectorCreateRequestObject(BaseModel):
 
 @director_blueprint.route("/directors/create_submit", methods=["POST"])
 def submit():
-    if request.method == "POST":
+    if request.method=="POST":
         # Access the form data
         data = request.form
         try:

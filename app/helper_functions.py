@@ -9,5 +9,9 @@ def create_director(username: str, nation_id: int):
     return postgres_aws.write(f"""insert into directors (username, nation_id) values ('{username}', {nation_id})""")
 
 
+def create_audience(username: str):
+    return postgres_aws.write(f"""insert into audience (username) values ('{username}')""")
+
+
 def define_director_platform(username: str, platform_id: int):
     return postgres_aws.write(f"""insert into directorworkswith (username, platform_id) values ('{username}', {platform_id})""")
