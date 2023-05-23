@@ -27,8 +27,8 @@ def login_required(role="ANY"):
         return decorated_view
 
     return wrapper
-
-
+  
+  
 @movie_blueprint.route("/movies")
 def view_directors():
     query = """

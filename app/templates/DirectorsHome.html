@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Directors</title>
+</head>
+<body>
+  <header>
+    <h1>Directors Home Page</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="/directors/list">View Directors List</a></li>
+      <li><a href="/directors/create">Create a Director</a></li>
+    </ul>
+  </nav>
+
+  {% if error %}
+  <p>{{ error }}</p>
+{% else %}
+
+{% endif %}
+
+  <footer>
+    <p>&copy; Designed for CMPE321 Project 3.</p>
+  </footer>
+</body>
+</html>
