@@ -149,7 +149,7 @@ def logout():
 
 
 app.register_blueprint(crud_table_blueprint)
-app.register_blueprint(director_blueprint)
-app.register_blueprint(audience_blueprint)
+app.register_blueprint(director_blueprint, url_prefix="/directors")
+app.register_blueprint(audience_blueprint, url_prefix="/audience")
 
 app.run()

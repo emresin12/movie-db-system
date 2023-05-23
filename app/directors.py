@@ -11,12 +11,12 @@ from pydantic import BaseModel, validator
 director_blueprint = Blueprint("director_blueprint", __name__)
 
 
-@director_blueprint.route("/directors")
+@director_blueprint.route("/")
 def directors_home_page():
     return render_template("DirectorsHome.html")
 
 
-@director_blueprint.route("/directors/list")
+@director_blueprint.route("/list")
 def view_directors():
     query = """
     select d.username, u.name, u.surname, n.nation, dww.platform_id, rp.platform_name from directors d 
@@ -31,7 +31,7 @@ def view_directors():
     )
 
 
-@director_blueprint.route("/directors/create")
+@director_blueprint.route("/create")
 def create_director_page():
     nations = postgres_aws.get("SELECT * FROM nation")
     return render_template("DirectorsCreate.html", nations=nations)
@@ -83,7 +83,7 @@ class DirectorCreateRequestObject(BaseModel):
         return rating_platform_id
 
 
-@director_blueprint.route("/directors/create_submit", methods=["POST"])
+@director_blueprint.route("/create_submit", methods=["POST"])
 def submit():
     if request.method == "POST":
         # Access the form data
