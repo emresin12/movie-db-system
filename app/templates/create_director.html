@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form</title>
+</head>
+<body>
+    <form method="POST" action="{{ url_for('director_blueprint.submit') }}">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="surname">Surname:</label>
+        <input type="text" id="surname" name="surname" required><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <label for="nation_id">Nation ID:</label>
+        <input type="text" id="nation_id" name="nation_id" required><br>
+
+        <label for="rating_platform_id">Rating Platform ID:</label>
+        <input type="text" id="rating_platform_id" name="rating_platform_id" required><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="messages">
+                    <li>{{ messages[-1] }}</li>
+            </ul>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

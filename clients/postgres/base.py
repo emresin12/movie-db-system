@@ -15,8 +15,10 @@ class PostgresBase:
             return self.connection
         else:
             connection = psycopg2.connect(
-                database=self.database, user=self.user,
-                password=self.password, host=self.host
+                database=self.database,
+                user=self.user,
+                password=self.password,
+                host=self.host,
             )
             connection.autocommit = True
             self.connection = connection
