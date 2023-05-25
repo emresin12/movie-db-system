@@ -1,10 +1,11 @@
 from dotenv import load_dotenv
 
-from app.audience import audience_blueprint
+
 from clients.postgres.postgresql_db import postgres_aws
 from flask import Flask, request, render_template, redirect, session, url_for
 import os
 from functools import wraps
+
 
 from flask_login import (
     UserMixin,
@@ -19,10 +20,12 @@ from flask_login import (
 app = Flask(__name__)
 from app.crud_table import crud_table_blueprint
 from app.directors import director_blueprint
+from app.audience import audience_blueprint
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
 
 app.secret_key = os.environ.get("SECRET_KEY")
 
@@ -76,9 +79,10 @@ def login_required(role="ANY"):
     def wrapper(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
-
             if not current_user.is_authenticated:
-                return app.login_manager.unauthorized()
+                return (
+                    login_manager.unauthorized()
+                )  # this should be the right method to call unauthorized view
             urole = current_user._get_current_object().get_urole()
             print(urole)
             if (urole != role) and (role != "ANY"):
@@ -124,7 +128,6 @@ where sub.username = '{username}'
         user = postgres_aws.get(query)
         print(user)
         if user:
-
             userObj = User(user)
             login_user(userObj)
             print(current_user.is_authenticated)

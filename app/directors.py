@@ -7,8 +7,29 @@ from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint, request, redirect, flash, url_for
 from app.helper_functions import create_director, create_user, define_director_platform
 from pydantic import BaseModel, validator
+from functools import wraps
+from .views import current_user
 
 director_blueprint = Blueprint("director_blueprint", __name__)
+
+
+def login_required(role="ANY"):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            if not current_user.is_authenticated:
+                return render_template(
+                    "login.html"
+                )  # this should be the right method to call unauthorized view
+            urole = current_user._get_current_object().get_urole()
+            print(urole)
+            if (urole != role) and (role != "ANY"):
+                return render_template("index.html", error="not authorized")
+            return fn(*args, **kwargs)
+
+        return decorated_view
+
+    return wrapper
 
 
 @director_blueprint.route("/directors")
