@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 
 from app.audience import audience_blueprint
 from clients.postgres.postgresql_db import postgres_aws
-from flask import Flask, request, render_template, redirect, session, url_for
+from flask import Flask, request, render_template, redirect, url_for
 import os
 from functools import wraps
 
@@ -150,6 +150,6 @@ def logout():
 
 app.register_blueprint(crud_table_blueprint)
 app.register_blueprint(director_blueprint, url_prefix="/directors")
-app.register_blueprint(audience_blueprint, url_prefix="/audience")
+app.register_blueprint(audience_blueprint, url_prefix="/audiences")
 
 app.run()
