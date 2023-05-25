@@ -92,8 +92,8 @@ def submit():
         # Access the form data
         data = {**request.form}
         try:
-            if data['rating_platform_id'] == "":
-                data['rating_platform_id'] = None
+            if data["rating_platform_id"] == "":
+                data["rating_platform_id"] = None
             obj = DirectorCreateRequestObject(**data)
             obj.insert_to_database()
         except Exception as e:
@@ -106,7 +106,9 @@ def submit():
 @director_blueprint.route("/update_platform")
 def update_platform_page():
     rating_platforms = postgres_aws.get("SELECT * FROM nation")
-    return render_template("DirectorsUpdateRatingPlatform.html", platforms=rating_platforms)
+    return render_template(
+        "DirectorsUpdateRatingPlatform.html", platforms=rating_platforms
+    )
 
 
 @director_blueprint.route("/update_platform_id", methods=["POST"])
@@ -115,22 +117,32 @@ def update_platform():
         # Access the form data
         data = request.form
         # check if username exists
-        exists = postgres_aws.get(f"select * from directors where username = '{data['username']}' ")
+        exists = postgres_aws.get(
+            f"select * from directors where username = '{data['username']}' "
+        )
         if not exists:
             flash("Director does not exist", "error")
             return redirect(url_for("director_blueprint.update_platform_page"))
         # check if rating platform exists
-        exists = postgres_aws.get(f"select * from ratingplatform where platform_id = {data['rating_platform_id']} ")
+        exists = postgres_aws.get(
+            f"select * from ratingplatform where platform_id = {data['rating_platform_id']} "
+        )
         if not exists:
             flash("Rating Platform does not exist", "error")
             return redirect(url_for("director_blueprint.update_platform_page"))
         # check if rating platform exists for director
-        exists = postgres_aws.get(f"select * from directorworkswith where username = '{data['username']}' ")
+        exists = postgres_aws.get(
+            f"select * from directorworkswith where username = '{data['username']}' "
+        )
         if exists:
             # overwrite director's rating platform
-            postgres_aws.write(f"update directorworkswith set platform_id = {data['rating_platform_id']} where username = '{data['username']}' ")
+            postgres_aws.write(
+                f"update directorworkswith set platform_id = {data['rating_platform_id']} where username = '{data['username']}' "
+            )
         else:
             # create director's rating platform
-            postgres_aws.write(f"insert into directorworkswith (username, platform_id) values ('{data['username']}', {data['rating_platform_id']})")
+            postgres_aws.write(
+                f"insert into directorworkswith (username, platform_id) values ('{data['username']}', {data['rating_platform_id']})"
+            )
     flash("Director's platform id is updated successfully!", "success")
     return redirect(url_for("director_blueprint.update_platform_page"))
