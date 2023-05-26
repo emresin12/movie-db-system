@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
     <style>
         body {
             color: #404E67;
@@ -17,32 +20,30 @@
             font-family: 'Open Sans', sans-serif;
         }
     </style>
+    <script>
+        $(".chosen-select").chosen({
+            no_results_text: "Oops, nothing found!"
+        })
+    </script>
 </head>
 <body>
-<form method="POST" action="{{ url_for('director_blueprint.submit') }}">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br>
+<form method="POST" action="{{ url_for('movies_blueprint.create_movie') }}">
+    <label for="movie_id">Movie ID:</label>
+    <input type="text" id="movie_id" name="movie_id" required><br>
 
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required><br>
+    <label for="movie_name">Movie Name:</label>
+    <input type="text" id="movie_name" name="movie_name" required><br>
 
-    <label for="surname">Surname:</label>
-    <input type="text" id="surname" name="surname" required><br>
+    <label for="duration">Duration:</label>
+    <input type="text" id="duration" name="duration" required><br>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
-
-    <label for="nation_id">Nation:</label>
-    <select id="nation_id" name="nation_id" required>
-        <option value="" selected disabled>Select a nation</option>
-        {% for nation in nations %}
-            <option value={{ nation['nation_id'] }}>{{ nation['nation'] }}</option>
+    <label for="genre_list">Genre List:</label>
+    <select data-placeholder="Begin typing a name to filter..." multiple class="chosen-select" name="genre_list">
+        <option value="" selected disabled>Select at least one genre</option>
+        {% for genre in genres %}
+            <option value={{ genre['genre_id'] }}>{{ genre['genre_name'] }}</option>
         {% endfor %}
-    </select><br>
-
-    <label for="rating_platform_id">Rating Platform ID (Optional):</label>
-    <input type="text" id="rating_platform_id" name="rating_platform_id"><br>
-
+    </select>
     <input type="submit" value="Submit">
 </form>
 

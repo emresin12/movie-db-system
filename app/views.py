@@ -1,8 +1,6 @@
 from dotenv import load_dotenv
-
-
 from clients.postgres.postgresql_db import postgres_aws
-from flask import Flask, request, render_template, redirect, session, url_for
+from flask import Flask, request, render_template, redirect, url_for
 import os
 from functools import wraps
 
@@ -21,6 +19,8 @@ app = Flask(__name__)
 from app.crud_table import crud_table_blueprint
 from app.directors import director_blueprint
 from app.audience import audience_blueprint
+from app.movies import movies_blueprint
+from app.theatres import theatres_blueprint
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -152,7 +152,9 @@ def logout():
 
 
 app.register_blueprint(crud_table_blueprint)
-app.register_blueprint(director_blueprint)
-app.register_blueprint(audience_blueprint)
+app.register_blueprint(director_blueprint, url_prefix="/directors")
+app.register_blueprint(audience_blueprint, url_prefix="/audiences")
+app.register_blueprint(movies_blueprint, url_prefix="/movies")
+app.register_blueprint(theatres_blueprint, url_prefix="/theatres")
 
 app.run()

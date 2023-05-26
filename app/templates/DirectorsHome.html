@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Directors</title>
+    <title>Directors</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            color: #404E67;
+            background: #F5F7FA;
+            font-family: 'Open Sans', sans-serif;
+        }
+    </style>
 </head>
 <body>
-  <header>
+<header>
     <h1>Directors Home Page</h1>
-  </header>
+</header>
 
-  <nav>
+<nav>
     <ul>
-      <li><a href="/directors/list">View Directors List</a></li>
-      <li><a href="/directors/create">Create a Director</a></li>
+        <li><a href="/directors/list">View Directors List</a></li>
+        <li><a href="/directors/create">Create a Director</a></li>
+        <li><a href="/directors/update_platform">Update Rating Platform of a Director</a></li>
     </ul>
-  </nav>
+</nav>
 
-  {% if error %}
-  <p>{{ error }}</p>
+{% if error %}
+    <p>{{ error }}</p>
 {% else %}
 
 {% endif %}
 
-  <footer>
+<footer>
     <p>&copy; Designed for CMPE321 Project 3.</p>
-  </footer>
+</footer>
 </body>
 </html>

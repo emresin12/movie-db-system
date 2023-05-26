@@ -10,6 +10,7 @@ from .views import current_user
 audience_blueprint = Blueprint("audience_blueprint", __name__)
 
 
+
 def login_required(role="ANY"):
     def wrapper(fn):
         @wraps(fn)
@@ -34,7 +35,7 @@ def directors_home_page():
     return render_template("AudienceHome.html")
 
 
-@audience_blueprint.route("/audience/list")
+@audience_blueprint.route("/list")
 def view_audience():
     query = """
     select u.username, u.name, u.surname from audience a 
@@ -46,7 +47,7 @@ def view_audience():
     )
 
 
-@audience_blueprint.route("/audience/create")
+@audience_blueprint.route("/create")
 def create_audience_page():
     return render_template("AudienceCreate.html")
 
@@ -68,7 +69,7 @@ class AudienceCreateRequestObject(BaseModel):
         return True
 
 
-@audience_blueprint.route("/audience/create_submit", methods=["POST"])
+@audience_blueprint.route("/create_submit", methods=["POST"])
 def submit():
     if request.method == "POST":
         # Access the form data

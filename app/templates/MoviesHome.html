@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Form</title>
+    <title>Movies</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
@@ -19,28 +19,29 @@
     </style>
 </head>
 <body>
-<form method="POST" action="{{ url_for('audience_blueprint.submit') }}">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br>
+<header>
+    <h1>Movies Home Page</h1>
+</header>
 
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required><br>
+<nav>
+    <ul>
+        <li><a href="/movies/ratings">View Ratings by Audience</a></li>
+        <li><a href="/movies/by_director">View Movies by Director</a></li>
+        <li><a href="/movies/average_rating">View Average Rating of a Movie</a></li>
+        <li><a href="/movies/create_movie">Add a Movie</a></li>
+        <li><a href="/movies/create_session">Add a Movie Session</a></li>
+        <li><a href="/movies/add_predecessors">Add Predecessors</a></li>
+    </ul>
+</nav>
 
-    <label for="surname">Surname:</label>
-    <input type="text" id="surname" name="surname" required><br>
+{% if error %}
+    <p>{{ error }}</p>
+{% else %}
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
+{% endif %}
 
-    <input type="submit" value="Submit">
-</form>
-
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul class="messages">
-            <li>{{ messages[-1] }}</li>
-        </ul>
-    {% endif %}
-{% endwith %}
+<footer>
+    <p>&copy; Designed for CMPE321 Project 3.</p>
+</footer>
 </body>
 </html>
