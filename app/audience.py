@@ -41,6 +41,7 @@ def directors_home_page():
     return render_template("AudienceHome.html")
 
 
+@login_required(role="Database_Manager")
 @audience_blueprint.route("/list")
 def view_audience():
     query = """
@@ -53,6 +54,7 @@ def view_audience():
     )
 
 
+@login_required(role="Database_Manager")
 @audience_blueprint.route("/create")
 def create_audience_page():
     return render_template("AudienceCreate.html")
@@ -75,6 +77,7 @@ class AudienceCreateRequestObject(BaseModel):
         return True
 
 
+@login_required(role="Database_Manager")
 @audience_blueprint.route("/create_submit", methods=["POST"])
 def submit():
     if request.method == "POST":
@@ -93,6 +96,7 @@ def submit():
 @audience_blueprint.route(
     "/audiences_bought_tickets_for_director", methods=["GET", "POST"]
 )
+@login_required(role="Director")
 def view_audiences_bought_tickets():
     query = f"select movie_id, movie_name from movie where director_username = '{current_user.get_id()}'"
     movies = postgres_aws.get(query)

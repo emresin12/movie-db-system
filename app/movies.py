@@ -55,6 +55,7 @@ class CreateMovieRequest(BaseModel):
         return True
 
 
+@login_required(role="Director")
 @movies_blueprint.route("/create_movie", methods=["GET", "POST"])
 def create_movie():
     query = "select * from genre"
@@ -94,6 +95,7 @@ class CreateMovieSessionRequest(BaseModel):
         return True
 
 
+@login_required(role="Director")
 @movies_blueprint.route("/create_session", methods=["GET", "POST"])
 def create_movie_session():
     query = "select movie_id, movie_name from movie"
@@ -131,6 +133,7 @@ class AddPredecessorsRequest(BaseModel):
         return True
 
 
+@login_required(role="Director")
 @movies_blueprint.route("/add_predecessors", methods=["GET", "POST"])
 def add_predecessors():
     query = "select * from movie"
@@ -153,6 +156,7 @@ def add_predecessors():
             return render_template("MoviesAddPredecessor.html", movies=movies, error=e)
 
 
+@login_required(role="Director")
 @movies_blueprint.route("/movies_by_director")
 def get_movies_by_director():
     query = f"select m.movie_id, m.movie_name, (select ms.theatre_id from moviesession ms where ms.movie_id = m.movie_id) as theatre_id, (select ms.time_slot from moviesession ms where ms.movie_id = m.movie_id)  as time_slot from movie m where m.director_username = '{current_user.get_id()}'"
@@ -195,6 +199,7 @@ movies_ratings_blueprint = Blueprint("movies_ratings_blueprint", __name__)
 movies_blueprint.register_blueprint(movies_ratings_blueprint, url_prefix="/ratings")
 
 
+@login_required(role="Database_Manager")
 @movies_ratings_blueprint.route("/")
 def view_ratings_by_audience():
     return render_template(
@@ -202,6 +207,7 @@ def view_ratings_by_audience():
     )
 
 
+@login_required(role="Database_Manager")
 @movies_ratings_blueprint.route("/results", methods=["POST"])
 def results():
     if request.method == "POST":
@@ -230,11 +236,13 @@ movies_blueprint.register_blueprint(
 )
 
 
+@login_required(role="Database_Manager")
 @movies_by_director_blueprint.route("/")
 def view_movies_by_director():
     return render_template("MoviesByDirector.html", fields=[], rows=[], table_title="")
 
 
+@login_required(role="Database_Manager")
 @movies_by_director_blueprint.route("/results", methods=["POST"])
 def results_by_director():
     if request.method == "POST":
@@ -263,6 +271,7 @@ movies_blueprint.register_blueprint(
 )
 
 
+@login_required(role="Database_Manager")
 @movies_average_rating_blueprint.route("/")
 def view_average_rating_of_a_movie():
     return render_template(
@@ -270,6 +279,7 @@ def view_average_rating_of_a_movie():
     )
 
 
+@login_required(role="Database_Manager")
 @movies_average_rating_blueprint.route("/results", methods=["POST"])
 def results_average_rating():
     if request.method == "POST":

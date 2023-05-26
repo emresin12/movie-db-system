@@ -16,7 +16,6 @@ from flask_login import (
 
 # load_dotenv()
 app = Flask(__name__)
-from app.crud_table import crud_table_blueprint
 from app.directors import director_blueprint
 from app.audience import audience_blueprint
 from app.movies import movies_blueprint
@@ -151,7 +150,6 @@ def logout():
     return "goodbye"
 
 
-app.register_blueprint(crud_table_blueprint)
 app.register_blueprint(director_blueprint, url_prefix="/directors")
 app.register_blueprint(audience_blueprint, url_prefix="/audiences")
 app.register_blueprint(movies_blueprint, url_prefix="/movies")
