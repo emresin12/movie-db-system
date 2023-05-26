@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            color: #404E67;
+            background: #F5F7FA;
+            font-family: 'Open Sans', sans-serif;
+        }
+    </style>
+    <script>
+        $(".chosen-select").chosen({
+            no_results_text: "Oops, nothing found!"
+        })
+    </script>
+</head>
+<body>
+<form method="POST" action="{{ url_for('movies_blueprint.add_predecessors') }}">
+    <label for="movie_id">Movie:</label>
+    <select id="movie_id" name="movie_id" required>
+        <option value="" selected disabled>Select a movie</option>
+        {% for movie in movies %}
+            <option value={{ movie['movie_id'] }}>{{ movie['movie_name'] }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="predecessor_list">Predecessors List:</label>
+    <select data-placeholder="Begin typing a name to filter..." multiple class="chosen-select" name="predecessor_list">
+        <option value="" selected disabled>Select at least one predecessor movie</option>
+        {% for movie in movies %}
+            <option value={{ movie['movie_id'] }}>{{ movie['movie_name'] }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Submit">
+</form>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="messages">
+            <li>{{ messages[-1] }}</li>
+        </ul>
+    {% endif %}
+{% endwith %}
+</body>
+</html>

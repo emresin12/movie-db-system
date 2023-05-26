@@ -98,6 +98,42 @@ def create_movie_session():
             )
 
 
+class AddPredecessorsRequest(BaseModel):
+    movie_id: int
+    predecessor_list: list
+
+    def insert_into_database(self):
+        for predecessor in self.predecessor_list:
+            query = f"insert into moviepredecessors (followup_movie_id, predecessor_movie_id) values ({self.movie_id}, {predecessor})"
+            postgres_aws.write(query)
+        return True
+
+
+@movies_blueprint.route("/add_predecessors", methods=["GET", "POST"])
+def add_predecessors():
+    query = "select * from movie"
+    movies = postgres_aws.get(query)
+    if request.method=='GET':
+        return render_template(
+            "MoviesAddPredecessor.html", movies=movies
+        )
+    elif request.method=='POST':
+        input_request = {'movie_id': request.form['movie_id'], 'predecessor_list': request.form.getlist('predecessor_list')}
+        try:
+            data = AddPredecessorsRequest(**input_request)
+            print(data.dict())
+            data.insert_into_database()
+            flash('Predecessors are set successfully!')
+            return render_template(
+                "MoviesAddPredecessor.html", movies=movies
+            )
+        except Exception as e:
+            flash(str(e))
+            return render_template(
+                "MoviesAddPredecessor.html", movies=movies, error=e
+            )
+
+
 movies_ratings_blueprint = Blueprint("movies_ratings_blueprint", __name__)
 movies_blueprint.register_blueprint(movies_ratings_blueprint, url_prefix="/ratings")
 
