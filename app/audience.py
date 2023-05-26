@@ -41,8 +41,9 @@ def directors_home_page():
     return render_template("AudienceHome.html")
 
 
-@login_required(role="Database_Manager")
+
 @audience_blueprint.route("/list")
+@login_required(role="Database_Manager")
 def view_audience():
     query = """
     select u.username, u.name, u.surname from audience a 
@@ -54,8 +55,9 @@ def view_audience():
     )
 
 
-@login_required(role="Database_Manager")
+
 @audience_blueprint.route("/create")
+@login_required(role="Database_Manager")
 def create_audience_page():
     return render_template("AudienceCreate.html")
 
@@ -77,8 +79,9 @@ class AudienceCreateRequestObject(BaseModel):
         return True
 
 
-@login_required(role="Database_Manager")
+
 @audience_blueprint.route("/create_submit", methods=["POST"])
+@login_required(role="Database_Manager")
 def submit():
     if request.method == "POST":
         # Access the form data

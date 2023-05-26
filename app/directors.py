@@ -38,8 +38,9 @@ def directors_home_page():
     return render_template("DirectorsHome.html")
 
 
-@login_required(role="Database_Manager")
+
 @director_blueprint.route("/list")
+@login_required(role="Database_Manager")
 def view_directors():
     query = """
     select d.username, u.name, u.surname, n.nation, dww.platform_id, rp.platform_name from directors d 
@@ -54,8 +55,9 @@ def view_directors():
     )
 
 
-@login_required(role="Database_Manager")
+
 @director_blueprint.route("/create")
+@login_required(role="Database_Manager")
 def create_director_page():
     nations = postgres_aws.get("SELECT * FROM nation")
     return render_template("DirectorsCreate.html", nations=nations)
@@ -110,8 +112,9 @@ class DirectorCreateRequestObject(BaseModel):
         return rating_platform_id
 
 
-@login_required(role="Database_Manager")
+
 @director_blueprint.route("/create_submit", methods=["POST"])
+@login_required(role="Database_Manager")
 def submit():
     if request.method == "POST":
         # Access the form data
@@ -177,8 +180,9 @@ def updateMovieName():
         return render_template("DirectorUpdateMovieName.html")
 
 
-@login_required(role="Database_Manager")
+
 @director_blueprint.route("/update_platform")
+@login_required(role="Database_Manager")
 def update_platform_page():
     rating_platforms = postgres_aws.get("SELECT * FROM nation")
     return render_template(
@@ -186,8 +190,9 @@ def update_platform_page():
     )
 
 
-@login_required(role="Database_Manager")
+
 @director_blueprint.route("/update_platform_id", methods=["POST"])
+@login_required(role="Database_Manager")
 def update_platform():
     if request.method == "POST":
         # Access the form data

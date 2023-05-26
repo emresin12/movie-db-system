@@ -145,6 +145,7 @@ where sub.username = '{username}'
 
 
 @app.route("/logout", methods=["GET", "POST"])
+@login_required("ANY")
 def logout():
     logout_user()
     return "goodbye"

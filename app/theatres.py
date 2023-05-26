@@ -30,8 +30,9 @@ def theatres_home_page():
     return render_template("TheatresHome.html")
 
 
-@login_required(role="Director")
+
 @theatres_blueprint.route("/available_list", methods=["GET", "POST"])
+@login_required(role="Director")
 def avilable_theatre_list_page():
     if request.method == "GET":
         return render_template("AvailableTheatres.html")
