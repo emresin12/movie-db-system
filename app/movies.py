@@ -1,5 +1,5 @@
 from flask_login import current_user
-
+from app.helper_functions import get_predecessors
 from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint, request, flash
 from pydantic import BaseModel, validator
@@ -132,6 +132,27 @@ def add_predecessors():
             return render_template(
                 "MoviesAddPredecessor.html", movies=movies, error=e
             )
+
+
+@movies_blueprint.route("/movies_by_director")
+def get_movies_by_director():
+    query = f"select m.movie_id, m.movie_name, (select ms.theatre_id from moviesession ms where ms.movie_id = m.movie_id) as theatre_id, (select ms.time_slot from moviesession ms where ms.movie_id = m.movie_id)  as time_slot from movie m where m.director_username = '{current_user.get_id()}'"
+    movie_data = postgres_aws.get(query)
+    if not movie_data:
+        return render_template(
+            "MoviesByCurrentDirector.html",
+            table_title="No Movie Found"
+        )
+    output = []
+    for movie in movie_data:
+        temp_data = movie
+        movie_id = temp_data['movie_id']
+        temp_data['predecessors_list'] = get_predecessors(movie_id)
+        output.append(temp_data)
+    converted_rows = [[d['movie_id'], d['movie_name'], d['theatre_id'], d['time_slot'], ', '.join([str(x) for x in d['predecessors_list'] if x != ''])] for d in output]
+    return render_template(
+        "MoviesByCurrentDirector.html", fields=['movie_id', 'movie_name', 'theatre_id', 'time_slot', 'predecessors_list'], rows=converted_rows, table_title="Movies by Current Director (You)"
+    )
 
 
 movies_ratings_blueprint = Blueprint("movies_ratings_blueprint", __name__)

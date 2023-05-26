@@ -23,3 +23,20 @@ def define_director_platform(username: str, platform_id: int):
     return postgres_aws.write(
         f"""insert into directorworkswith (username, platform_id) values ('{username}', {platform_id})"""
     )
+
+
+def get_predecessors(movie_id):
+    # Query to get the predecessors
+    query = f"""SELECT predecessor_movie_id FROM moviepredecessors WHERE followup_movie_id = {movie_id}"""
+    print(query)
+    # Execute the query
+    result = postgres_aws.get(query)
+    print(result)
+
+    if result==[]:
+        return []
+
+    all_predecessors = [result[0]['predecessor_movie_id']]
+    all_predecessors.extend(get_predecessors(result[0]['predecessor_movie_id']))
+
+    return all_predecessors
