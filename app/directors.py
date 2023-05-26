@@ -138,3 +138,23 @@ def listTheathersForSlot():
     else:
         return render_template("DirectorAvailableTheatre.html")
     
+@director_blueprint.route("/directors/update_movie_name", methods=["POST","GET"])
+@login_required(role="Director")
+def updateMovieName():
+    #Directors will update a movie by movie id and new movie name. But the movie has to be the one that they directed.
+    if request.method=="POST":
+        movie_id = request.form.get("movie_id")
+        new_movie_name = request.form.get("name")
+        username = current_user.get_id()
+        query = f"""select * from Movie m where m.movie_id = {movie_id} and m.director_username = '{username}'"""
+        ret = postgres_aws.get(query)
+        if ret:
+            query = f"""update Movie set movie_name = '{new_movie_name}' where movie_id = {movie_id}"""
+            postgres_aws.write(query)
+            
+            return render_template("DirectorUpdateMovieName.html", error= "Movie name is updated successfully!")
+        else:
+            
+            return render_template("DirectorUpdateMovieName.html",error= "There is no such movie ID of for this director!")
+    else:
+        return render_template("DirectorUpdateMovieName.html")

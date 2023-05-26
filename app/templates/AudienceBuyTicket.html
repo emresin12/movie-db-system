@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Update Movie</title>
+</head>
+<body>
+  <header>
+    <h1>Audience Buy Ticket</h1>
+  </header>
+
+  <form action="{{ url_for('audience_blueprint.buy_ticket') }}" method="POST">
+    <label for="session_id">session ID:</label>
+    <input type="text" id="session_id" name="session_id" required><br>
+    <input type="submit" value="Submit">
+  </form>
+
+
+  {% if error %}
+  <p>{{ error }}</p>
+{% else %}
+
+{% endif %}
+
+  <footer>
+    <p>&copy; Designed for CMPE321 Project 3.</p>
+  </footer>
+</body>
+</html>
