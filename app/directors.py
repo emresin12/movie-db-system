@@ -1,8 +1,3 @@
-# Requirement: 5. Database managers shall be able to view all directors.
-# The list must include the following attributes: username,
-# name, surname, nation, platform id.
-# 2. Database managers shall be able to add new Users (Audiences or Directors)
-# to the system.
 from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint, request, redirect, flash, url_for
 from app.helper_functions import create_director, create_user, define_director_platform
