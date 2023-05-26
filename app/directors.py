@@ -1,9 +1,33 @@
 from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint, request, redirect, flash, url_for
-from app.helper_functions import create_director, create_user, define_director_platform
-from pydantic import BaseModel, validator, Field
+from app.helper_functions import create_director, create_user, define_director_platform,validate_date
+from pydantic import BaseModel, validator,Field
+from functools import wraps
+from .views import current_user
+
+
 
 director_blueprint = Blueprint("director_blueprint", __name__)
+
+
+
+def login_required(role="ANY"):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            if not current_user.is_authenticated:
+                return render_template(
+                    "login.html"
+                )  # this should be the right method to call unauthorized view
+            urole = current_user._get_current_object().get_urole()
+            print(urole)
+            if (urole != role) and (role != "ANY"):
+                return render_template("index.html", error="not authorized")
+            return fn(*args, **kwargs)
+
+        return decorated_view
+
+    return wrapper
 
 
 @director_blueprint.route("/")
@@ -98,6 +122,48 @@ def submit():
     return redirect(url_for("director_blueprint.create_director_page"))
 
 
+
+
+
+@director_blueprint.route("/available_theatres", methods=["POST","GET"])
+@login_required(role="Director")
+def listTheathersForSlot():
+    if request.method=="POST":
+        slot = request.form.get("slot")
+        date = request.form.get("date")
+
+        if validate_date(date):
+            query = f"""select * from Theatre t where t.theatre_id not in (select m.theatre_id from moviesession m where m.time_slot = '{slot}' and m.date = '{date}')"""
+            ret = postgres_aws.get_rows_and_fields_from_sql(query)
+            return render_template("TableView.html", fields=ret[0], rows=ret[1], table_title="Theaters")
+        else:
+            flash("Date is not valid!", "error")
+            return 
+    #I want to select the theaters that are not available in movie sessions table
+    else:
+        return render_template("DirectorAvailableTheatre.html")
+    
+@director_blueprint.route("/update_movie_name", methods=["POST","GET"])
+@login_required(role="Director")
+def updateMovieName():
+    #Directors will update a movie by movie id and new movie name. But the movie has to be the one that they directed.
+    if request.method=="POST":
+        movie_id = request.form.get("movie_id")
+        new_movie_name = request.form.get("name")
+        username = current_user.get_id()
+        query = f"""select * from Movie m where m.movie_id = {movie_id} and m.director_username = '{username}'"""
+        ret = postgres_aws.get(query)
+        if ret:
+            query = f"""update Movie set movie_name = '{new_movie_name}' where movie_id = {movie_id}"""
+            postgres_aws.write(query)
+            
+            return render_template("DirectorUpdateMovieName.html", error= "Movie name is updated successfully!")
+        else:
+            
+            return render_template("DirectorUpdateMovieName.html",error= "There is no such movie ID of for this director!")
+    else:
+        return render_template("DirectorUpdateMovieName.html")
+
 @director_blueprint.route("/update_platform")
 def update_platform_page():
     rating_platforms = postgres_aws.get("SELECT * FROM nation")
@@ -141,3 +207,4 @@ def update_platform():
             )
     flash("Director's platform id is updated successfully!", "success")
     return redirect(url_for("director_blueprint.update_platform_page"))
+

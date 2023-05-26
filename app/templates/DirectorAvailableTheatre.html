@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Audience</title>
+</head>
+<body>
+  <header>
+    <h1>List Available Theatres</h1>
+  </header>
+
+  <form action="{{ url_for('director_blueprint.listTheathersForSlot') }}" method="POST">
+    <label for="username">Date:</label>
+    <input type="date" id="date" name="date" required><br>
+    <input type="number" id="slot" name="slot" required><br>
+    <input type="submit" value="Submit">
+  </form>
+
+
+  {% if error %}
+  <p>{{ error }}</p>
+{% else %}
+
+{% endif %}
+
+  <footer>
+    <p>&copy; Designed for CMPE321 Project 3.</p>
+  </footer>
+</body>
+</html>

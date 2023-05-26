@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Audience</title>
+</head>
+<body>
+  <header>
+    <h1>Audience Delete</h1>
+  </header>
+
+  <form action="{{ url_for('audience_blueprint.delete_audience') }}" method="POST">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br>
+    <input type="submit" value="Submit">
+  </form>
+
+
+  {% if error %}
+  <p>{{ error }}</p>
+{% else %}
+
+{% endif %}
+
+  <footer>
+    <p>&copy; Designed for CMPE321 Project 3.</p>
+  </footer>
+</body>
+</html>
