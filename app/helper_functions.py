@@ -1,5 +1,5 @@
 from clients.postgres.postgresql_db import postgres_aws
-
+from datetime import datetime
 
 def create_user(username: str, password: str, name: str, surname: str):
     return postgres_aws.write(
@@ -23,3 +23,10 @@ def define_director_platform(username: str, platform_id: int):
     return postgres_aws.write(
         f"""insert into directorworkswith (username, platform_id) values ('{username}', {platform_id})"""
     )
+
+def validate_date(date_string):
+    try:
+        date = datetime.strptime(date_string, "%Y-%m-%d") # the format may vary based on your input
+        return True
+    except ValueError:
+        return False

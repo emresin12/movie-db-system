@@ -81,3 +81,21 @@ def submit():
             return redirect(url_for("audience_blueprint.create_audience_page"))
     flash("Audience is created successfully!", "success")
     return redirect(url_for("audience_blueprint.create_audience_page"))
+
+@audience_blueprint.route("/audience/delete", methods=["POST","GET"])
+def delete_audience():
+    if request.method == "POST":
+        data = request.form
+        username = data["username"]
+
+        res = postgres_aws.get(f"""select * from Audience where username = '{username}'""") # check if it is an audience 
+        if len(res) == 0:
+            flash("User is not an audience!", "error")
+            return redirect(url_for("audience_blueprint.delete_audience"))
+        query = f"""
+        delete from "User" where username = '{username}'
+        """
+        postgres_aws.write(query)
+        return redirect(url_for("audience_blueprint.view_audience"))
+    
+    return render_template("DeleteAudienceByManager.html")

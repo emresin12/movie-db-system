@@ -5,7 +5,7 @@
 # to the system.
 from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint, request, redirect, flash, url_for
-from app.helper_functions import create_director, create_user, define_director_platform
+from app.helper_functions import create_director, create_user, define_director_platform,validate_date
 from pydantic import BaseModel, validator
 from functools import wraps
 from .views import current_user
@@ -117,3 +117,24 @@ def submit():
             return redirect(url_for("director_blueprint.create_director_page"))
     flash("Director is created successfully!", "success")
     return redirect(url_for("director_blueprint.create_director_page"))
+
+
+
+
+@director_blueprint.route("/directors/available_theatres", methods=["POST","GET"])
+def listTheathersForSlot():
+    if request.method=="POST":
+        slot = request.form.get("slot")
+        date = request.form.get("date")
+
+        if validate_date(date):
+            query = f"""select * from Theatre t where t.theatre_id not in (select m.theatre_id from moviesession m where m.time_slot = '{slot}' and m.date = '{date}')"""
+            ret = postgres_aws.get_rows_and_fields_from_sql(query)
+            return render_template("TableView.html", fields=ret[0], rows=ret[1], table_title="Theaters")
+        else:
+            flash("Date is not valid!", "error")
+            return 
+    #I want to select the theaters that are not available in movie sessions table
+    else:
+        return render_template("DirectorAvailableTheatre.html")
+    
