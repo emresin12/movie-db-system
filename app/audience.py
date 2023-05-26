@@ -84,6 +84,7 @@ def submit():
     return redirect(url_for("audience_blueprint.create_audience_page"))
 
 @audience_blueprint.route("/delete", methods=["POST","GET"])
+@login_required(role="Database_Manager")
 def delete_audience():
     if request.method == "POST":
         data = request.form
@@ -101,10 +102,9 @@ def delete_audience():
     
     return render_template("DeleteAudienceByManager.html")
 
-#16. Audiences shall be able to list all the movies. The list must include the fol- lowing attributes:
-#  movie id, movie name, director’s surname, platform, theatre id, time slot, predecessors list. 
-# predecessors list must be a string in the form “movie1 id, movie2 id, ...”
+
 @audience_blueprint.route("/list_movies", methods=["GET"])
+@login_required(role="Audience")
 def list_movies():
         query = """select m.movie_id,m.movie_name, u.surname, d.platform_id,s.theatre_id,s.time_slot  from movie m
         join "User" u on m.director_username= u.username
@@ -132,6 +132,7 @@ def list_movies():
 
 
 @audience_blueprint.route("/buy_ticket", methods=["GET","POST"])
+@login_required(role="Audience")
 def buy_ticket():
     if request.method == "POST":
         data = request.form
@@ -190,6 +191,7 @@ def buy_ticket():
         return render_template("AudienceBuyTicket.html")
 
 @audience_blueprint.route("/view_tickets", methods=["GET"])
+@login_required(role="Audience")
 def view_tickets():
     username = current_user.get_id()
     query = f"""SELECT

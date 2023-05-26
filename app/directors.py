@@ -126,6 +126,7 @@ def submit():
 
 
 @director_blueprint.route("/available_theatres", methods=["POST","GET"])
+@login_required(role="Director")
 def listTheathersForSlot():
     if request.method=="POST":
         slot = request.form.get("slot")
