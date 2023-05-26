@@ -118,7 +118,13 @@
 <body>
 <form method="POST" action="{{ url_for('theatres_blueprint.avilable_theatre_list_page') }}">
     <label for="time_slot">Time Slot:</label>
-    <input type="text" id="time_slot" name="time_slot" required><br>
+    <select id="time_slot" name="time_slot" required>
+        <option value="" selected disabled>Select a time slot</option>
+        <option value=1>1</option>
+        <option value=2>2</option>
+        <option value=3>3</option>
+        <option value=4>4</option>
+    </select><br>
 
     <label for="input_date">Date:</label>
     <input type="date" id="input_date" name="input_date"

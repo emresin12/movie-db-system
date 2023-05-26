@@ -2,7 +2,7 @@
 # to the system.
 from clients.postgres.postgresql_db import postgres_aws
 from flask import render_template, Blueprint, request, redirect, flash, url_for
-from app.helper_functions import create_audience, create_user, define_director_platform
+from app.helper_functions import create_audience, create_user
 from pydantic import BaseModel
 
 audience_blueprint = Blueprint("audience_blueprint", __name__)
