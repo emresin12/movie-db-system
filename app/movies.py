@@ -1,14 +1,40 @@
 from flask_login import current_user
 
 from clients.postgres.postgresql_db import postgres_aws
+
 from flask import render_template, Blueprint, request, flash
+from functools import wraps
+from .views import current_user
 from pydantic import BaseModel, validator
+
 
 movies_blueprint = Blueprint("movies_blueprint", __name__)
 
 
+
+def login_required(role="ANY"):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            if not current_user.is_authenticated:
+                return render_template(
+                    "login.html"
+                )  # this should be the right method to call unauthorized view
+            urole = current_user._get_current_object().get_urole()
+            print(urole)
+            if (urole != role) and (role != "ANY"):
+                return render_template("index.html", error="not authorized")
+            return fn(*args, **kwargs)
+
+        return decorated_view
+
+    return wrapper
+
+
+
 @movies_blueprint.route("/")
 def view_movies_home_page():
+
     return render_template(
         "MoviesHome.html"
     )

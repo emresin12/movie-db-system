@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Update Movie</title>
+</head>
+<body>
+  <header>
+    <h1>Director Movie Update</h1>
+  </header>
+
+  <form action="{{ url_for('director_blueprint.updateMovieName') }}" method="POST">
+    <label for="username">Movie ID:</label>
+    <input type="text" id="movie_id" name="movie_id" required><br>
+    <label for="username">New Movie Name:</label>
+    <input type="text" id="name" name="name" required><br>
+    <input type="submit" value="Submit">
+  </form>
+
+
+  {% if error %}
+  <p>{{ error }}</p>
+{% else %}
+
+{% endif %}
+
+  <footer>
+    <p>&copy; Designed for CMPE321 Project 3.</p>
+  </footer>
+</body>
+</html>
