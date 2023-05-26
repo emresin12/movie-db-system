@@ -125,7 +125,7 @@ def submit():
 
 
 
-@director_blueprint.route("/directors/available_theatres", methods=["POST","GET"])
+@director_blueprint.route("/available_theatres", methods=["POST","GET"])
 def listTheathersForSlot():
     if request.method=="POST":
         slot = request.form.get("slot")
@@ -142,7 +142,7 @@ def listTheathersForSlot():
     else:
         return render_template("DirectorAvailableTheatre.html")
     
-@director_blueprint.route("/directors/update_movie_name", methods=["POST","GET"])
+@director_blueprint.route("/update_movie_name", methods=["POST","GET"])
 @login_required(role="Director")
 def updateMovieName():
     #Directors will update a movie by movie id and new movie name. But the movie has to be the one that they directed.
